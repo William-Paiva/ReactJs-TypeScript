@@ -1,12 +1,14 @@
-import { Box, Button, Flex, Heading, Input, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Text, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function App() {
 
-  const [input, setInput] = useState(''); //lembrar do setTarefa
+  const [input, setInput] = useState(''); 
+  const [tarefa, setTarefa] = useState<string[]>([])
 
   function addTarefa(){
-    setInput(input)
+    setTarefa(tarefas => [...tarefas, input])
+    setInput('')
   }
 
   return (
@@ -28,7 +30,13 @@ export default function App() {
           onClick={() => addTarefa()}
         >Enviar Tarefa</Button>
 
-        <Box>{input}</Box>
+        {tarefa.map((item) => (
+          <Box key={item}>
+            <Text>
+              {item}
+            </Text>
+          </Box>
+        ))}
       </VStack>
     </Flex>
 
