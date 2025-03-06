@@ -67,7 +67,7 @@ export default function App() {
       </button>
       <hr />
 
-      {tasks.map((item, index) => ( 
+      {tasks.map((item) => ( 
         <section key={item}>
           <span>{item}</span>
           <button onClick={() => handleEdit(item)}>Editar</button>
