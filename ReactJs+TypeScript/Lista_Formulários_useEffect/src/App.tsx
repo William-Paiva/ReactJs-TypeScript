@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, useMemo } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 
 export default function App() {
-  const[tasks, setTasks] = useState<string[]>([])
+  const [tasks, setTasks] = useState<string[]>([])
 
-  const[input, setInput] = useState("")
+  const [input, setInput] = useState("")
 
-  const[editTask, setEditTask] = useState({
+  const [editTask, setEditTask] = useState({
     enabled: false,
     task: ''
   })
@@ -18,13 +18,13 @@ export default function App() {
   useEffect(() => {
     const tarefasSalvas = localStorage.getItem('@localwill')
 
-    if(tarefasSalvas){
+    if (tarefasSalvas) {
       setTasks(JSON.parse(tarefasSalvas));
     }
   }, [])
 
   useEffect(() => {
-    if(firstRender.current){
+    if (firstRender.current) {
       firstRender.current = false;
       return;
     }
@@ -33,23 +33,25 @@ export default function App() {
 
   }, [tasks])
 
-
-  function handleRegister(){
-    if(!input){
+  //Hook para usar coisas quando necessário - useCallback
+  const handleRegister = useCallback(() => {
+    if (!input) {
       alert('Preencha o nome da sua tarefa!')
       return;
     }
 
-    if(editTask.enabled){
+    if (editTask.enabled) {
       handleSaveEdit()
       return;
     }
 
     setTasks(tarefas => [...tarefas, input])
     setInput('')
-  }
+  }, [input, tasks])
 
-  function handleSaveEdit(){
+
+
+  function handleSaveEdit() {
     const findIndexTask = tasks.findIndex(task => task === editTask.task)
     const allTasks = [...tasks];
 
@@ -61,15 +63,15 @@ export default function App() {
       task: ''
     })
 
-    setInput('')   
+    setInput('')
   }
 
-  function handleDelete(item: string){
+  function handleDelete(item: string) {
     const removeTask = tasks.filter(task => task !== item)
     setTasks(removeTask)
   }
 
-  function handleEdit(item: string){
+  function handleEdit(item: string) {
 
     inputRef.current?.focus();
 
@@ -81,7 +83,7 @@ export default function App() {
   }
 
   //Hook para computar valor memorizado
-  const totalTarefas = useMemo(() =>{
+  const totalTarefas = useMemo(() => {
     return tasks.length;
 
   }, [tasks])
@@ -89,7 +91,7 @@ export default function App() {
   return (
     <div>
       <h1>Lista de Tarefas</h1>
-      <input 
+      <input
         placeholder="Digite o nome da tarefa: "
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -105,7 +107,7 @@ export default function App() {
       <strong>Você tem {totalTarefas} tarefas!</strong>
       <br /><br />
 
-      {tasks.map((item) => ( 
+      {tasks.map((item) => (
         <section key={item}>
           <span>{item}</span>
           <button onClick={() => handleEdit(item)}>Editar</button>
